@@ -32,7 +32,7 @@ app.use(
     origin:
       config.env === 'production'
         ? [
-
+// for production currently in development mode
           ]
         : '*',
   })
@@ -43,7 +43,7 @@ app.enable('trust proxy');
 app.get('/health', (req, res, next) => {
   try {
     res.status(HTTP_STATUS.OK).json({
-      status: 'healthy',
+      status: 'healthyy',
       timestamp: new Date().toISOString(),
       uptime: process.uptime(),
       environment: config.env,

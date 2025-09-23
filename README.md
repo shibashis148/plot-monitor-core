@@ -54,6 +54,20 @@ ALERT_WEBHOOK_URL=https://your-webhook-url.com/alerts
 ALERT_WEBHOOK_API_KEY=your-webhook-api-key
 ```
 
+## 🏠 Local Development
+
+For local development with building from source:
+
+```bash
+# Start all services (builds locally)
+docker-compose -f docker-compose.local.yml up --build
+
+# Access the application
+# Frontend: http://localhost:3000
+# Backend API: http://localhost:5000
+# Database: localhost:5432
+```
+
 ## 📱 Features
 
 ### Frontend (React + Material-UI)

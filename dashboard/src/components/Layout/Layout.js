@@ -71,7 +71,7 @@ function Layout() {
               display: collapsed && !isMobile ? 'none' : 'block',
             }}
           >
-            FarmPlot
+            Farm Plot
           </Typography>
         </Box>
       </Toolbar>
