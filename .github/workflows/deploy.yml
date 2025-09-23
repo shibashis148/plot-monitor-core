@@ -98,7 +98,7 @@ jobs:
           --instance-ids "${{ secrets.EC2_INSTANCE_ID }}" \
           --document-name "AWS-RunShellScript" \
           --parameters 'commands=[
-            "cd /home/ubuntu/farmplot",
+            "cd /home/ubuntu/workspace/plot-monitor-core",
             "docker-compose down || true",
             "docker image prune -f",
             "echo \"${{ secrets.GITHUB_TOKEN }}\" | docker login ${{ env.DOCKER_REGISTRY }} -u ${{ github.actor }} --password-stdin",
