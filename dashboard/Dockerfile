@@ -1,25 +1,8 @@
-# Build stage
-FROM node:20-alpine as build
-
-WORKDIR /app
-
-# Copy package files
-COPY package.json package-lock.json ./
-
-# Install dependencies
-RUN npm install --frozen-lockfile
-
-# Copy source code
-COPY . .
-
-# Build the app
-RUN npm run build
-
-# Production stage
+# Production stage - using pre-built frontend from CI/CD
 FROM nginx:alpine
 
-# Copy built app to nginx
-COPY --from=build /app/build /usr/share/nginx/html
+# Copy pre-built app to nginx
+COPY build/ /usr/share/nginx/html
 
 # Copy nginx configuration
 COPY nginx.conf /etc/nginx/conf.d/default.conf
