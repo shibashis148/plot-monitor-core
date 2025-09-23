@@ -141,7 +141,7 @@ jobs:
             "cd /home/ubuntu/workspace/plot-monitor-core",
             "docker-compose down || true",
             "docker image prune -f",
-            "echo \"${{ secrets.GITHUB_TOKEN }}\" | docker login ${{ env.DOCKER_REGISTRY }} -u ${{ github.actor }} --password-stdin",
+            "echo \"${{ secrets.GHCR_TOKEN }}\" | docker login ${{ env.DOCKER_REGISTRY }} -u ${{ github.actor }} --password-stdin",
             "docker-compose pull",
             "docker-compose up -d",
             "sleep 30",
