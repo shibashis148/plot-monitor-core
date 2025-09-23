@@ -227,21 +227,4 @@ docker-compose logs frontend
 docker-compose logs postgres
 ```
 
-## 📄 License
 
-This project is licensed under the MIT License.
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
-
-## 📞 Support
-
-For issues and questions:
-1. Check the troubleshooting section
-2. Review the API documentation
-3. Create an issue in the repository
