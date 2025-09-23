@@ -240,7 +240,7 @@ test-*.js
 *.old
 
 # Lock files (keep yarn.lock but ignore others)
-package-lock.json
+
 npm-shrinkwrap.json
 
 # Local development
