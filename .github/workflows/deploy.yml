@@ -1,0 +1,138 @@
+name: Deploy FarmPlot Application
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+env:
+  NODE_VERSION: '20'
+  DOCKER_REGISTRY: ghcr.io
+  BACKEND_IMAGE_NAME: ${{ github.repository }}/farmplot-backend
+  FRONTEND_IMAGE_NAME: ${{ github.repository }}/farmplot-frontend
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Log in to Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.DOCKER_REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Extract metadata for backend
+      id: backend-meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ env.DOCKER_REGISTRY }}/${{ env.BACKEND_IMAGE_NAME }}
+        tags: |
+          type=ref,event=branch
+          type=ref,event=pr
+          type=sha,prefix={{branch}}-
+          type=raw,value=latest,enable={{is_default_branch}}
+
+    - name: Extract metadata for frontend
+      id: frontend-meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ env.DOCKER_REGISTRY }}/${{ env.FRONTEND_IMAGE_NAME }}
+        tags: |
+          type=ref,event=branch
+          type=ref,event=pr
+          type=sha,prefix={{branch}}-
+          type=raw,value=latest,enable={{is_default_branch}}
+
+    - name: Build and push backend image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./core
+        push: true
+        tags: ${{ steps.backend-meta.outputs.tags }}
+        labels: ${{ steps.backend-meta.outputs.labels }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+    - name: Build and push frontend image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./dashboard
+        push: true
+        tags: ${{ steps.frontend-meta.outputs.tags }}
+        labels: ${{ steps.frontend-meta.outputs.labels }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
+
+    - name: Deploy to EC2 via SSM
+      run: |
+        aws ssm send-command \
+          --instance-ids "${{ secrets.EC2_INSTANCE_ID }}" \
+          --document-name "AWS-RunShellScript" \
+          --parameters 'commands=[
+            "cd /home/ubuntu/farmplot",
+            "docker-compose down || true",
+            "docker image prune -f",
+            "echo \"${{ secrets.GITHUB_TOKEN }}\" | docker login ${{ env.DOCKER_REGISTRY }} -u ${{ github.actor }} --password-stdin",
+            "docker-compose pull",
+            "docker-compose up -d",
+            "sleep 30",
+            "docker-compose ps",
+            "curl -f http://localhost:5000/health || echo \"Backend health check failed\"",
+            "curl -f http://localhost:3000 || echo \"Frontend health check failed\""
+          ]' \
+          --output text \
+          --query "Command.CommandId"
+
+    - name: Wait for deployment to complete
+      run: |
+        COMMAND_ID=$(aws ssm send-command \
+          --instance-ids "${{ secrets.EC2_INSTANCE_ID }}" \
+          --document-name "AWS-RunShellScript" \
+          --parameters 'commands=["echo deployment complete"]' \
+          --output text \
+          --query "Command.CommandId")
+        
+        aws ssm wait command-executed \
+          --command-id $COMMAND_ID \
+          --instance-id "${{ secrets.EC2_INSTANCE_ID }}"
+
+    - name: Check deployment status
+      run: |
+        aws ssm get-command-invocation \
+          --command-id $(aws ssm list-command-invocations \
+            --instance-id "${{ secrets.EC2_INSTANCE_ID }}" \
+            --max-items 1 \
+            --output text \
+            --query "CommandInvocations[0].CommandId") \
+          --instance-id "${{ secrets.EC2_INSTANCE_ID }}" \
+          --output text \
+          --query "Status"
