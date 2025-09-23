@@ -139,9 +139,10 @@ jobs:
           --document-name "AWS-RunShellScript" \
           --parameters 'commands=[
             "cd /home/ubuntu/workspace/plot-monitor-core",
+            "export GITHUB_REPOSITORY=${{ github.repository }}",
             "docker-compose down || true",
             "docker image prune -f",
-            "echo \"${{ secrets.GHCR_TOKEN }}\" | docker login ${{ env.DOCKER_REGISTRY }} -u ${{ github.actor }} --password-stdin",
+            "echo \"${{ secrets.GITHUB_TOKEN }}\" | docker login ${{ env.DOCKER_REGISTRY }} -u ${{ github.actor }} --password-stdin",
             "docker-compose pull",
             "docker-compose up -d",
             "sleep 30",

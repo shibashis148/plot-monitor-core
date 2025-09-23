@@ -19,9 +19,7 @@ services:
       retries: 5
 
   backend:
-    build:
-      context: ./core
-      dockerfile: Dockerfile
+    image: ghcr.io/${GITHUB_REPOSITORY}/farmplot-backend:latest
     container_name: farmplot-backend
     environment:
       NODE_ENV: ${NODE_ENV:-development}
@@ -56,9 +54,7 @@ services:
     restart: unless-stopped
 
   frontend:
-    build:
-      context: ./dashboard
-      dockerfile: Dockerfile
+    image: ghcr.io/${GITHUB_REPOSITORY}/farmplot-frontend:latest
     container_name: farmplot-frontend
     environment:
       REACT_APP_API_URL: ${REACT_APP_API_URL:-http://localhost:5000/v1}
