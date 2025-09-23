@@ -146,106 +146,92 @@ function SensorData() {
         </Box>
       </Box>
 
-      <Grid container spacing={3}>
-        {/* Current Values */}
-        <Grid item xs={12}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6" gutterBottom>
-                Current Values
-              </Typography>
-              <Grid container spacing={3}>
-                <Grid item xs={12} sm={4}>
-                  <Box display="flex" alignItems="center" p={2} bgcolor="background.default" borderRadius={2}>
-                    <TemperatureIcon sx={{ mr: 2, color: 'error.main', fontSize: 32 }} />
-                    <Box>
-                      <Typography variant="h4" fontWeight={600} color="error.main">
-                        {latestData?.temperature?.toFixed(1) || 'N/A'}°C
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        Temperature
-                      </Typography>
-                    </Box>
-                  </Box>
-                </Grid>
-                <Grid item xs={12} sm={4}>
-                  <Box display="flex" alignItems="center" p={2} bgcolor="background.default" borderRadius={2}>
-                    <HumidityIcon sx={{ mr: 2, color: 'info.main', fontSize: 32 }} />
-                    <Box>
-                      <Typography variant="h4" fontWeight={600} color="info.main">
-                        {latestData?.humidity?.toFixed(1) || 'N/A'}%
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        Humidity
-                      </Typography>
-                    </Box>
-                  </Box>
-                </Grid>
-                <Grid item xs={12} sm={4}>
-                  <Box display="flex" alignItems="center" p={2} bgcolor="background.default" borderRadius={2}>
-                    <SoilIcon sx={{ mr: 2, color: 'warning.main', fontSize: 32 }} />
-                    <Box>
-                      <Typography variant="h4" fontWeight={600} color="warning.main">
-                        {latestData?.soil_moisture?.toFixed(1) || 'N/A'}%
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        Soil Moisture
-                      </Typography>
-                    </Box>
-                  </Box>
-                </Grid>
-              </Grid>
-            </CardContent>
-          </Card>
+<Grid container spacing={3} direction="column">
+  {/* Current Values */}
+  <Grid item xs={12}>
+    <Card>
+      <CardContent>
+        <Typography variant="h6" gutterBottom>
+          Current Values
+        </Typography>
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <Box display="flex" alignItems="center" p={2} bgcolor="background.default" borderRadius={2}>
+              <TemperatureIcon sx={{ mr: 2, color: 'error.main', fontSize: 32 }} />
+              <Box>
+                <Typography variant="h4" fontWeight={600} color="error.main">
+                  {latestData?.temperature?.toFixed(1) || 'N/A'}°C
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Temperature
+                </Typography>
+              </Box>
+            </Box>
+          </Grid>
+          <Grid item xs={12}>
+            <Box display="flex" alignItems="center" p={2} bgcolor="background.default" borderRadius={2}>
+              <HumidityIcon sx={{ mr: 2, color: 'info.main', fontSize: 32 }} />
+              <Box>
+                <Typography variant="h4" fontWeight={600} color="info.main">
+                  {latestData?.humidity?.toFixed(1) || 'N/A'}%
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Humidity
+                </Typography>
+              </Box>
+            </Box>
+          </Grid>
+          <Grid item xs={12}>
+            <Box display="flex" alignItems="center" p={2} bgcolor="background.default" borderRadius={2}>
+              <SoilIcon sx={{ mr: 2, color: 'warning.main', fontSize: 32 }} />
+              <Box>
+                <Typography variant="h4" fontWeight={600} color="warning.main">
+                  {latestData?.soil_moisture?.toFixed(1) || 'N/A'}%
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Soil Moisture
+                </Typography>
+              </Box>
+            </Box>
+          </Grid>
         </Grid>
+      </CardContent>
+    </Card>
+  </Grid>
 
-        {/* Chart */}
-        <Grid item xs={12}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6" gutterBottom>
-                Sensor Data Trends (Last 24 Hours)
-              </Typography>
-              {sensorData.length > 0 ? (
-                <Box sx={{ height: 400 }}>
-                  <LineChart
-                    xAxis={[{
-                      data: chartData.timestamps,
-                      scaleType: 'point',
-                    }]}
-                    series={[
-                      {
-                        data: chartData.temperature,
-                        label: 'Temperature (°C)',
-                        color: '#f44336',
-                      },
-                      {
-                        data: chartData.humidity,
-                        label: 'Humidity (%)',
-                        color: '#2196f3',
-                      },
-                      {
-                        data: chartData.soilMoisture,
-                        label: 'Soil Moisture (%)',
-                        color: '#ff9800',
-                      },
-                    ]}
-                    height={400}
-                    margin={{ left: 60, right: 30, top: 20, bottom: 60 }}
-                    grid={{ vertical: true, horizontal: true }}
-                  />
-                </Box>
-              ) : (
-                <Box display="flex" justifyContent="center" alignItems="center" height={400}>
-                  <Typography variant="body1" color="text.secondary">
-                    No sensor data available for the last 24 hours
-                  </Typography>
-                </Box>
-              )}
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
+  {/* Chart */}
+  <Grid item xs={12}>
+    <Card>
+      <CardContent>
+        <Typography variant="h6" gutterBottom>
+          Sensor Data Trends (Last 24 Hours)
+        </Typography>
+        {sensorData.length > 0 ? (
+          <Box sx={{ height: 400 }}>
+            <LineChart
+              xAxis={[{ data: chartData.timestamps, scaleType: 'point' }]}
+              series={[
+                { data: chartData.temperature, label: 'Temperature (°C)', color: '#f44336' },
+                { data: chartData.humidity, label: 'Humidity (%)', color: '#2196f3' },
+                { data: chartData.soilMoisture, label: 'Soil Moisture (%)', color: '#ff9800' },
+              ]}
+              height={400}
+              margin={{ left: 60, right: 30, top: 20, bottom: 60 }}
+              grid={{ vertical: true, horizontal: true }}
+            />
+          </Box>
+        ) : (
+          <Box display="flex" justifyContent="center" alignItems="center" height={400}>
+            <Typography variant="body1" color="text.secondary">
+              No sensor data available for the last 24 hours
+            </Typography>
+          </Box>
+        )}
+      </CardContent>
+    </Card>
+  </Grid>
+</Grid>
+
     </Box>
   );
 }
