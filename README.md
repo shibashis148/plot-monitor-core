@@ -19,9 +19,9 @@ A complete farm monitoring system with React frontend and Node.js backend, featu
    cd farmplot
    ```
 
-2. **Start all services**:
+2. **Start all services (locally)**:
    ```bash
-   docker-compose up
+   docker-compose -f docker-compose.local.yml up --build 
    ```
 
 3. **Access the application**:
@@ -86,17 +86,7 @@ docker-compose -f docker-compose.local.yml up --build
 - **PostGIS Support**: Geographic data handling
 - **Data Validation**: Joi schema validation
 
-## 🐳 Docker Services
 
-### Development (`docker-compose.yml`)
-- **postgres**: PostgreSQL with PostGIS (port 5433)
-- **backend**: Node.js API server (port 5000)
-- **frontend**: React app with nginx (port 3000)
-
-### Production (`docker-compose.prod.yml`)
-- **postgres**: PostgreSQL with PostGIS (port 5432)
-- **backend**: Node.js API server (port 5000)
-- **frontend**: React app with nginx (port 3000)
 
 ## 🔄 CI/CD Pipeline
 
@@ -110,6 +100,8 @@ docker-compose -f docker-compose.local.yml up --build
 - `AWS_SECRET_ACCESS_KEY`
 - `AWS_REGION`
 - `EC2_INSTANCE_ID`
+- `GHCR_TOKEN`
+- `REACT_APP_API_URL`
 
 ## 📊 API Endpoints
 
@@ -149,8 +141,8 @@ yarn start
 ### Frontend Development
 ```bash
 cd dashboard
-yarn install
-yarn start
+npm install
+npm run start
 ```
 
 ### Database Management
@@ -175,12 +167,7 @@ yarn run seed
 3. **Push to main branch** to trigger deployment
 4. **Access application** at EC2 public IP
 
-### Manual Deployment
-```bash
-# On EC2 instance
-cd /home/ubuntu/farmplot
-docker-compose -f docker-compose.prod.yml up -d
-```
+
 
 ## 📁 Project Structure
 
@@ -210,25 +197,6 @@ farmplot/
 ├── docker-compose.prod.yml # Production setup
 └── README.md
 ```
-
-## 🔧 Troubleshooting
-
-### Common Issues
-
-1. **Database Connection Failed**
-   - Check PostgreSQL is running
-   - Verify connection credentials
-   - Ensure PostGIS extension is enabled
-
-2. **Frontend Can't Connect to Backend**
-   - Check backend is running on port 3000
-   - Verify API URL in frontend environment
-   - Check CORS configuration
-
-3. **Docker Build Fails**
-   - Check Docker is running
-   - Verify Dockerfile syntax
-   - Check for missing dependencies
 
 ### Logs
 ```bash
