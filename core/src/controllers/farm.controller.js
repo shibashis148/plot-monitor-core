@@ -36,46 +36,6 @@ const getFarms = async (req, res, next) => {
     logger.error('Error fetching farms:', error);
     logger.error('Error stack:', error.stack);
     
-    const mockFarms = [
-      {
-        id: 'farm-1',
-        name: 'Green Valley Farm',
-        owner_name: 'John Smith',
-        plot_count: 2,
-        healthy_plots: 1,
-        warning_plots: 1,
-        critical_plots: 0,
-        total_area: 50.5,
-        location: {
-          type: 'Point',
-          coordinates: [-74.0059, 40.7128]
-        },
-        boundary: {
-          type: 'Polygon',
-          coordinates: [[[-74.006, 40.712], [-74.005, 40.712], [-74.005, 40.713], [-74.006, 40.713], [-74.006, 40.712]]]
-        },
-        created_at: new Date().toISOString()
-      },
-      {
-        id: 'farm-2', 
-        name: 'Sunrise Agriculture',
-        owner_name: 'Jane Doe',
-        plot_count: 2,
-        healthy_plots: 1,
-        warning_plots: 0,
-        critical_plots: 1,
-        total_area: 75.2,
-        location: {
-          type: 'Point',
-          coordinates: [-73.9851, 40.7589]
-        },
-        boundary: {
-          type: 'Polygon',
-          coordinates: [[[-73.986, 40.758], [-73.984, 40.758], [-73.984, 40.760], [-73.986, 40.760], [-73.986, 40.758]]]
-        },
-        created_at: new Date().toISOString()
-      }
-    ];
     
     logger.info('Returning mock farm data due to database error');
     res.status(200).json({

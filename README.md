@@ -9,6 +9,25 @@ A complete farm monitoring system with React frontend and Node.js backend, featu
 - **Database**: PostgreSQL with PostGIS (knex query builder)
 - **Deployment**: Docker with GitHub Actions CI/CD
 
+## 🧠 Alert Logic
+
+### Alert Generation
+- **Triggers**: Sensor data exceeds plot thresholds (temperature, humidity, soil moisture)
+- **Severity**: Based on deviation percentage from threshold:
+  - `low`: <10% deviation
+  - `medium`: 10-25% deviation  
+  - `high`: 25-50% deviation
+  - `critical`: >50% deviation
+
+### Duplicate Prevention
+- **Same Condition**: Only one active alert per condition (e.g., "temperature above 30°C")
+- **Same Severity**: Prevents multiple alerts of same severity for same condition
+- **Active Only**: New alerts created only if previous ones are acknowledged/dismissed
+
+### Delivery Methods
+- **Email**: All severity levels
+- **Webhook**: High and critical severity only
+
 ## 🚀 Quick Start
 
 ### Local Development
