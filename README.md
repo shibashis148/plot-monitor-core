@@ -28,6 +28,13 @@ A complete farm monitoring system with React frontend and Node.js backend, featu
 - **Email**: All severity levels
 - **Webhook**: High and critical severity only
 
+## 📋 TODO (pending)
+
+### Webhook Security & Reliability
+- **API Key Verification**: Add `ALERT_WEBHOOK_API_KEY` validation for webhook authentication
+- **Timeout Configuration**: Implement `ALERT_WEBHOOK_TIMEOUT=10000` for request timeouts
+- **Retry Logic**: Add `ALERT_WEBHOOK_RETRIES=3` for failed webhook deliveries
+
 ## 🚀 Quick Start
 
 ### Local Development
