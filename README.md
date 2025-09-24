@@ -6,7 +6,7 @@ A complete farm monitoring system with React frontend and Node.js backend, featu
 
 - **Frontend**: React with Material-UI
 - **Backend**: Node.js with Express
-- **Database**: PostgreSQL with PostGIS
+- **Database**: PostgreSQL with PostGIS (knex query builder)
 - **Deployment**: Docker with GitHub Actions CI/CD
 
 ## 🚀 Quick Start
@@ -27,7 +27,7 @@ A complete farm monitoring system with React frontend and Node.js backend, featu
 3. **Access the application**:
    - Frontend: http://localhost:3000
    - Backend API: http://localhost:5000
-   - Database: localhost:5433
+   - Database: localhost:5432
 
 ### Environment Variables
 
