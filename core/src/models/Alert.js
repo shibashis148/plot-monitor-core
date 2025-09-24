@@ -190,7 +190,7 @@ class Alert {
     if (condition) {
       query = query.where('message', 'like', `%${condition}%`);
     }
-    
+
     return await query.first();
   }
 

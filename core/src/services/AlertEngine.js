@@ -221,7 +221,18 @@ class AlertEngine {
         return activeAlertForCondition;
       }
       
-      const alert = await Alert.create(alertData);
+      // Get farm information
+      const Farm = require('../models/Farm');
+      const farm = await Farm.findById(plot.farm_id);
+      
+      // Add farm and plot names to alert data
+      const alertDataWithNames = {
+        ...alertData,
+        farm_name: farm ? farm.name : 'Unknown',
+        plot_name: plot.name || 'Unknown'
+      };
+      
+      const alert = await Alert.create(alertDataWithNames);
       await this.deliverAlert(alert, plot);
       
       logger.info(`Created alert: ${alertData.alert_type} - ${alertData.severity} for plot ${alertData.plot_id}, condition: ${alertData.condition}`);
@@ -303,11 +314,6 @@ class AlertEngine {
     
     if (['high', 'critical'].includes(severity)) {
       methods.push('webhook');
-    }
-    
-    if (plot.delivery_preferences) {
-      const plotMethods = plot.delivery_preferences.methods || [];
-      return [...new Set([...methods, ...plotMethods])];
     }
     
     return methods;

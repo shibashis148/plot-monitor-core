@@ -67,6 +67,15 @@ function SensorData() {
     });
   };
 
+  const formatDateTime = (timestamp) => {
+    return new Date(timestamp).toLocaleString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+
   const getStatusColor = (status) => {
     switch (status) {
       case 'healthy':
@@ -209,7 +218,14 @@ function SensorData() {
         {sensorData.length > 0 ? (
           <Box sx={{ height: 400 }}>
             <LineChart
-              xAxis={[{ data: chartData.timestamps, scaleType: 'point' }]}
+              xAxis={[{ 
+                data: chartData.timestamps, 
+                scaleType: 'point',
+                valueFormatter: (value, index) => {
+                  const timestamp = sensorData[index]?.timestamp;
+                  return timestamp ? formatDateTime(timestamp) : value;
+                }
+              }]}
               series={[
                 { data: chartData.temperature, label: 'Temperature (°C)', color: '#f44336' },
                 { data: chartData.humidity, label: 'Humidity (%)', color: '#2196f3' },
@@ -218,6 +234,14 @@ function SensorData() {
               height={400}
               margin={{ left: 60, right: 30, top: 20, bottom: 60 }}
               grid={{ vertical: true, horizontal: true }}
+              tooltip={{
+                trigger: 'item',
+                axisContent: {
+                  Temperature: (value) => `${value}°C`,
+                  Humidity: (value) => `${value}%`,
+                  'Soil Moisture': (value) => `${value}%`,
+                }
+              }}
             />
           </Box>
         ) : (

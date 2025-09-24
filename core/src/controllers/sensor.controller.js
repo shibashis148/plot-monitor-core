@@ -38,6 +38,14 @@ const createSensorData = async (req, res, next) => {
       soil_moisture 
     });
     
+    // Check if plot exists
+    const Plot = require('../models/Plot');
+    const plot = await Plot.findById(plot_id);
+    if (!plot) {
+      logger.warn('Plot not found for sensor data', { plotId: plot_id });
+      throw new ApiError(HTTP_STATUS.NOT_FOUND, 'Plot not found');
+    }
+    
     const sensorData = await SensorData.create({
       plot_id,
       temperature: parseFloat(temperature),
@@ -46,7 +54,16 @@ const createSensorData = async (req, res, next) => {
     });
 
     logger.info('Processing alerts for sensor data', { sensorDataId: sensorData.id });
-    await AlertEngine.processSensorData(sensorData);
+    
+      // Fire-and-forget alert processing
+    setImmediate(async () => {
+      try {
+        await AlertEngine.processSensorData(sensorData);
+      } catch (err) {
+        console.error('Error processing alerts:', err);
+      }
+    });
+
 
     logger.info('Sensor data created and processed successfully', { 
       sensorDataId: sensorData.id,
